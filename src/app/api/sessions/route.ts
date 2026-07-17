@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+import {
+  blockWriteInDemoMode,
+  createApiRequestContext,
+  finalizeApiSuccessResponse,
+  toApiErrorResponse,
+} from "@/lib/server/api";
+import { createProcessingSession, loadSession } from "@/lib/server/sessions";
+
+const createSessionSchema = z.object({
+  label: z.string().trim().max(120).optional(),
+}).strict();
+
+export async function POST(request: Request) {
+  const requestContext = createApiRequestContext(request, "/api/sessions");
+  const blockedResponse = blockWriteInDemoMode(requestContext);
+  if (blockedResponse) {
+    return blockedResponse;
+  }
+
+  try {
+    const body = createSessionSchema.parse(await request.json().catch(() => ({})));
+    const sessionId = await createProcessingSession({
+      sourceType: "upload",
+      label: body.label,
+    });
+    const session = await loadSession(sessionId);
+
+    return finalizeApiSuccessResponse(
+      NextResponse.json({ session }),
+      requestContext,
+      {
+        event: "sessions.create",
+        details: {
+          sessionId,
+          sourceType: "upload",
+        },
+      },
+    );
+  } catch (error) {
+    return toApiErrorResponse(error, requestContext);
+  }
+}
