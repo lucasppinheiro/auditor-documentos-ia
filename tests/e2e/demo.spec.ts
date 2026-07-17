@@ -1,21 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-test("navega para o caso sintético e mantém exports sem banco", async ({ page }) => {
+test("navega para a revisão e mantém exports sem banco", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: /explorar demonstração sintética/i }).click();
+  await page.getByRole("link", { name: /abrir revisão/i }).click();
 
   await expect(page).toHaveURL(/\/demo$/);
   await expect(
-    page.getByText(/demonstração sintética.*somente leitura/i),
+    page.getByRole("heading", { name: /revisão do lote/i }),
   ).toBeVisible();
   await expect(
     page.getByRole("table", { name: /documentos revisados no lote/i }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /resultados.*xlsx/i }),
+    page.getByRole("link", { name: /^resultados$/i }),
   ).toHaveAttribute("href", "/api/demo/results.xlsx");
   await expect(
-    page.getByRole("link", { name: /auditoria.*xlsx/i }),
+    page.getByRole("link", { name: /trilha de auditoria/i }),
   ).toHaveAttribute("href", "/api/demo/audit.xlsx");
 });
 

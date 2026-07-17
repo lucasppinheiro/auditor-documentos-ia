@@ -1,25 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage presents the safe synthetic demonstration", async ({ page }) => {
+test("homepage presents the document review workspace", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle(/auditor de documentos com ia/i);
   await expect(
     page.getByRole("heading", {
-      name: /central de revisão/i,
+      name: /priorize achados e revise evidências com clareza/i,
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", {
-      name: /explorar caso sintético/i,
-    }),
+    page.getByRole("link", { name: /abrir revisão/i }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /explorar demonstração sintética/i }),
+    page.getByText(/não envie informações reais/i),
   ).toBeVisible();
-  await expect(
-    page.getByText(/nenhum dado real deve ser usado/i),
-  ).toBeVisible();
-  await expect(page.getByText(/saídas da revisão/i)).toBeVisible();
-  await expect(page.getByText(/referência histórica/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /revisão atual/i })).toBeVisible();
+  await expect(page.getByRole("table", { name: /documentos prioritários/i })).toBeVisible();
 });

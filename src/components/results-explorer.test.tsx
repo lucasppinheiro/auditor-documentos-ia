@@ -99,30 +99,24 @@ const sampleDocuments: SessionDocumentView[] = [
 ];
 
 describe("ResultsExplorer", () => {
-  it("renders the audit control room workspace landmarks", () => {
+  it("renders the review workspace landmarks", () => {
     render(<ResultsExplorer documents={sampleDocuments} session={sampleSession} />);
 
-    expect(
-      screen.getByRole("heading", {
-        name: /abc12345/i,
-      }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/resumo do lote/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /resultados.*xlsx/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /auditoria.*xlsx/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/revisão abc12345/i)).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /resumo da revisão/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^resultados$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /trilha de auditoria/i })).toBeInTheDocument();
     expect(screen.getAllByText(/achados/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/documentos revisados/i)).toBeInTheDocument();
-    expect(screen.getByText(/inspeção e evidências/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /revisão do lote/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /o que revisar/i })).toBeInTheDocument();
   });
 
   it("filters by anomaly and updates the details panel when another row is selected", () => {
     render(<ResultsExplorer documents={sampleDocuments} session={sampleSession} />);
 
-    fireEvent.click(screen.getByRole("button", { name: /cnpj divergente/i }));
+    fireEvent.change(screen.getByRole("combobox", { name: /filtrar por achado/i }), {
+      target: { value: "CNPJ_DIVERGENT" },
+    });
 
     expect(screen.getAllByText("DOC_0002.txt")).toHaveLength(2);
     expect(screen.queryByText("DOC_0001.txt")).not.toBeInTheDocument();

@@ -29,7 +29,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Dossiê — Auditor de Documentos com IA",
   description:
-    "Demonstração sintética de IA aplicada a GRC, com regras explicáveis, proveniência e revisão humana.",
+    "Revisão documental assistida com regras explicáveis, proveniência por campo e trilha de auditoria.",
 };
 
 export default function RootLayout({

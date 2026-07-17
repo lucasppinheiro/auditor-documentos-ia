@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ResultsExplorer, type SessionDocumentView } from "@/components/results-explorer";
+import { ProductShell } from "@/components/product-shell";
 import { getAppConfig } from "@/lib/config";
 import { loadSession, loadSessionDocuments } from "@/lib/server/sessions";
 
@@ -49,7 +50,11 @@ export default async function SessionPage({
   }));
 
   return (
-    <main className="forensic-shell mx-auto min-h-screen w-full max-w-[1440px] px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+    <ProductShell
+      active="documents"
+      documentsHref={`/sessions/${session.id}`}
+      exportBasePath={`/api/sessions/${session.id}`}
+    >
       <ResultsExplorer
         documents={viewDocuments}
         session={{
@@ -62,6 +67,6 @@ export default async function SessionPage({
           finishedAt: session.finishedAt,
         }}
       />
-    </main>
+    </ProductShell>
   );
 }
